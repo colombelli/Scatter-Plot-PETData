@@ -1,6 +1,15 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
+
+def ajustaListas(disciplinas_list, x_ax_list):
+
+    global flagNovaTurma
+    flagNovaTurma = 1  # liga o flag
+    disciplinas_list.pop()  # retira a última disciplina da lista
+    x_ax_list.pop()  # retira a última nota da lista x_ax também
+
+
 df = pd.read_csv('AvalDiscente_20xx-x.csv', sep=';', encoding='utf-8')
 
 header = list(df.columns.values)  # cria um lista com o nome das colunas
@@ -27,15 +36,24 @@ for questao in header[2:-1]:  # montar um gráfico por questão
     disciplinas = []  # lista de disciplinas no gráfico
     x_ax = []  # eixo x do plot
     y_ax = []  # eixo y do plot
+    flagNovaTurma = 1
 
     # faz as listas x y para plot
     for index, row in media_df_agrupado.iterrows():
-        if row['Turma'] == 'A':  # nova disciplina para comparar
+        if row['Turma'] == 'A' and flagNovaTurma == 1:  # nova disciplina para comparar
             disciplinas.append(row['Disciplina'])  # adiciona essa disciplina na lista
             x_ax.append(row[questao])  # adiciona a nota da questao na lista
+            flagNovaTurma = 0
 
-        elif row['Turma'] == 'B':  # disciplina já foi adicionada na lista
+        elif row['Turma'] == 'A' and flagNovaTurma == 0:  # a disciplina anterior só tinha turma A
+            ajustaListas(disciplinas, x_ax)
+
+        elif row['Turma'] == 'B' and flagNovaTurma == 0:  # disciplina já foi adicionada na lista
             y_ax.append(row[questao])  # adiciona a nota da questao na lista
+            flagNovaTurma = 1
+
+    if flagNovaTurma == 0:  # caso o último elemento da lista tiver somente turma A
+        ajustaListas(disciplinas, x_ax)
 
     plt.scatter(x=x_ax, y=y_ax, c='r')
     plt.grid()
