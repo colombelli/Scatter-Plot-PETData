@@ -10,6 +10,31 @@ def ajustaListas(disciplinas_list, x_ax_list):
     x_ax_list.pop()  # retira a última nota da lista x_ax também
 
 
+def quebraListaStrings(lista_de_strings):  # recebe uma lista de strings e trata de adicionar os \n em cada string
+
+    lista_de_strings2 = []
+    for string in lista_de_strings:
+        string = quebraStrings(string)
+        lista_de_strings2.append(string)
+        
+    return lista_de_strings2
+
+
+def quebraStrings(string):  # recebe uma string e adicona o \n a cada dois espaços encontrados
+
+    contador_spaces = 0
+    for index, char in enumerate(string):
+        if char == ' ' and contador_spaces != 1:
+            contador_spaces += 1
+
+        elif char == ' ':  # caso seja o segundo espaço, irá introduzir \n na string
+            string = string[:index] + '\n' + string[index+1:]
+            contador_spaces = 0  # reseta contador
+
+    return string
+            
+
+
 df = pd.read_csv('AvalDiscente_20xx-x.csv', sep=';', encoding='utf-8')
 
 header = list(df.columns.values)  # cria um lista com o nome das colunas
@@ -54,6 +79,10 @@ for questao in header[2:-1]:  # montar um gráfico por questão
 
     if flagNovaTurma == 0:  # caso o último elemento da lista tiver somente turma A
         ajustaListas(disciplinas, x_ax)
+
+    # quebra strings:
+    disciplinas = quebraListaStrings(disciplinas)
+
 
     plt.scatter(x=x_ax, y=y_ax, c='r', s=12)
     plt.grid()
