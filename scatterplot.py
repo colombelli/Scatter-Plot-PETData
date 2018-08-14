@@ -55,7 +55,7 @@ for questao in header[2:-1]:  # montar um gráfico por questão
     if flagNovaTurma == 0:  # caso o último elemento da lista tiver somente turma A
         ajustaListas(disciplinas, x_ax)
 
-    plt.scatter(x=x_ax, y=y_ax, c='r')
+    plt.scatter(x=x_ax, y=y_ax, c='r', s=12)
     plt.grid()
     plt.xlabel('Nota média turma A')
     plt.ylabel('Nota média turma B')
@@ -63,7 +63,8 @@ for questao in header[2:-1]:  # montar um gráfico por questão
 
     # anota o que cada ponto no gráfico representa, ou seja, o nome das disciplinas
     for i, txt in enumerate(disciplinas):
-        plt.annotate(txt, (x_ax[i], y_ax[i]))
+        plt.text(x_ax[i], y_ax[i], txt, fontsize=5, horizontalalignment='center',
+                 verticalalignment='bottom')
 
     plt.savefig(questao + '.png', bbox_inches='tight')
     plt.close()
